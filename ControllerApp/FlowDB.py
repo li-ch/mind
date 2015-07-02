@@ -17,7 +17,7 @@ class Flow(dict):
         self['size'] = -1
         self['cid'] = -1
         self['path'] = 0
-        self['stime'] = str(datetime.now())
+        self['stime'] = datetime.datetime.now()
 
 class FlowDB(object):
     def __init__(self):
