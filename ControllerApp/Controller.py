@@ -12,3 +12,6 @@ class Controller(object):
         self.allocator = Allocator()
         self.coflowid = CoflowID()
         self.flowSizeEstm = SizeEstimator()
+
+    # TODO: Integrate with Ryu
+    # TODO: testcases for controller components

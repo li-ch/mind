@@ -3,6 +3,7 @@ __author__ = 'li'
 from flowsizepred import GPRFlowEstimator
 import datetime
 
+
 class SizeEstimator(object):
     def __init__(self):
         self.model = GPRFlowEstimator.GPRModel()
@@ -41,7 +42,7 @@ class SizeEstimator(object):
         dstIP = flow['dstIP'].replace('.', ':')
         srcPort = flow['srcPort'].replace('.', ':')
         dstPort = flow['dstPort'].replace('.', ':')
-        flowsample = srcIP+':'+dstIP+':'+srcPort+':'+dstPort
+        flowsample = srcIP + ':' + dstIP + ':' + srcPort + ':' + dstPort
         fs = self.model.predictSingle_2(flowsample, 0)
         return fs
 
@@ -51,15 +52,19 @@ class SizeEstimator(object):
         dstIP = flow['dstIP'].replace('.', ':')
         srcPort = flow['srcPort'].replace('.', ':')
         dstPort = flow['dstPort'].replace('.', ':')
-        flowsample = srcIP+':'+dstIP+':'+srcPort+':'+dstPort
+        flowsample = srcIP + ':' + dstIP + ':' + srcPort + ':' + dstPort
         fs_update = datetime.datetime.now() - flow['stime']
         fs_update = fs_update.total_seconds()
         self.model.update_online(flowsample, fs_update)
+
+    # TODO: Add nwflowestimator
+
 
 def main():
     estm = SizeEstimator()
     estm.gflowestm_train()
     estm.gflowestm_predict()
+
 
 if __name__ == "__main__":
     main()
