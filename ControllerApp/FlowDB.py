@@ -1,5 +1,7 @@
 __author__ = 'li'
 
+import datetime
+
 class Flow(dict):
     def __init__(self,
                  fid=0,
@@ -15,6 +17,7 @@ class Flow(dict):
         self['size'] = -1
         self['cid'] = -1
         self['path'] = 0
+        self['stime'] = str(datetime.now())
 
 class FlowDB(object):
     def __init__(self):

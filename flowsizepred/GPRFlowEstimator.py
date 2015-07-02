@@ -1075,6 +1075,9 @@ class GaussOperation:
 
     @staticmethod
     def dist_IP(ip1, ip2):
+        if np.isnan(ip1) or np.isnan(ip2):
+            return 0
+
         L = 0
         IP1 = int (ip1)
         IP2 = int (ip2)
@@ -1144,7 +1147,7 @@ class GaussOperation:
         dist_x1_x2 = 0.0
 
         for i in range(0, len1):
-            for j in range(0,len2):
+            for j in range(0, len2):
                 for k in range(0, num_of_feature):
                     Type = feature_type[k]
                     x1 = xx1[k]
@@ -1168,9 +1171,9 @@ class GaussOperation:
     def Woodbury(K, y_new, Lambda, Alpha, target_mean, target_std, Str):
          
          f_fgt = 0.99
-         
-         target_mean = float(Str)/float(Str+1)*target_mean + y_new/(Str+1)
-         target_std = np.sqrt( float(Str)/float(Str+1) *target_std**2 + (y_new-target_mean)**2/float(Str+1) )
+         y_new=float(y_new)
+         target_mean = float(Str)/(float(Str)+1)*target_mean + y_new/(float(Str)+1)
+         target_std = np.sqrt( float(Str)/(float(Str)+1) *target_std**2 + (y_new-target_mean)**2/(float(Str)+1) )
          y_new = y_new - target_mean     
          y_new = y_new / target_std
          
@@ -1193,7 +1196,7 @@ class GaussOperation:
          
          
 if __name__ == '__main__':
-    input = 'D:\\Project MIND\\packet_trace_data\\univ_1_4.csv'
+    input = 'univ_all.csv'
     target_name = 'Payload_Bytes'
     feature_name = 'Server_IP_1:Server_IP_2:Server_IP_3:Server_IP_4:Client_IP_1:Client_IP_2:Client_IP_3:Client_IP_4:Server_Port:Client_Port'
     feature_type = 'IP:IP:IP:IP:IP:IP:IP:IP:Port:Port'
@@ -1278,7 +1281,3 @@ if __name__ == '__main__':
     print "The FNR is", FNR
     print "The FPR is", FPR
     print "The TNR is", TNR
-    
-   
-                   
-    
