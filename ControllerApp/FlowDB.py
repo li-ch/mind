@@ -104,3 +104,18 @@ class FlowDB(object):
             self.flowDB.append(exist[0])
         else:
             print 'flow {} not found'.format(fid)
+
+def main():
+    flowdb = FlowDB()
+    f1 = Flow(fid=1, srcIP='10.0.0.3', dstIP='10.0.0.4', srcPort=8002, dstPort=8003)
+    f2 = Flow(fid=2, srcIP='10.0.0.5', dstIP='10.0.0.6', srcPort=8002, dstPort=8003)
+    flowdb.reg(f1['id'], f1)
+    flowdb.reg(f2['id'], f2)
+    print flowdb.getSizeOnPath(0)
+    print flowdb.getAllFlowId()
+    print flowdb.getFlowsOnPath(0)
+    print flowdb.getAllCoflow()
+    print flowdb.getNumFlowsOnpath(0)
+
+if __name__ == '__main__':
+    main()
