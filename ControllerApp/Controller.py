@@ -16,5 +16,19 @@ class Controller(object):
         self.serverList = []
         self.spineList = []
 
+    def addNewRack(self, rack):
+        self.rackList.append(rack)
+
+    def removeRack(self, rack):
+        if rack in self.rackList:
+            self.rackList.remove(rack)
+        else:
+            print 'rack not found'
+
+    def addServer(self,server,rack):
+        self.serverList.append(server)
+
+
+
     # TODO: Integrate with Ryu
     # TODO: testcases for controller components
