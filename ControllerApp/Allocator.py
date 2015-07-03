@@ -13,11 +13,15 @@ class Allocator(object):
 
     def findPath(self, paths, flowdb):
         # global first fit algorithm
-        pathScore = dict(zip(paths, len(paths)*[0]))
-        for p, s in pathScore:
-            pathScore[p] = flowdb.getNumFlowsOnpath(p) + flowdb.getSizeOnPath(p)
+        pathScore = self.pathScorer(flowdb, paths)
         minScorePath = min(pathScore, key=pathScore.get)
         return minScorePath
+
+    def pathScorer(self, flowdb, paths):
+        pathScore = dict(zip(paths, len(paths) * [0]))
+        for p, s in pathScore:
+            pathScore[p] = flowdb.getNumFlowsOnpath(p) + flowdb.getSizeOnPath(p)
+        return pathScore
 
     def placeAllCoflows(self, paths, flowdb):
         cids = flowdb.getAllCoflow()

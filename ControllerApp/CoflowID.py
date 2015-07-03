@@ -3,6 +3,10 @@ __author__ = 'li'
 from FlowDB import FlowDB
 
 class CoflowID(object):
+
+    def __init__(self):
+        pass
+
     def coflowid(self, flowdb):
         fids = flowdb.getAllFlowId()
         # flowdb is just a list of flows

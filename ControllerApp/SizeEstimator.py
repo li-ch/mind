@@ -38,21 +38,22 @@ class SizeEstimator(object):
         return model
 
     def gflowestm_predict(self, flow):
-        srcIP = flow['srcIP'].replace('.', ':')
-        dstIP = flow['dstIP'].replace('.', ':')
-        srcPort = flow['srcPort'].replace('.', ':')
-        dstPort = flow['dstPort'].replace('.', ':')
-        flowsample = srcIP + ':' + dstIP + ':' + srcPort + ':' + dstPort
+        flowsample = self.flowSampleMaker(flow)
         fs = self.model.predictSingle_2(flowsample, 0)
         return fs
 
-    def gflowestm_update(self, flow):
-        # do this whenever a flow finishes routing and the flow info. is collected.
+    def flowSampleMaker(self, flow):
         srcIP = flow['srcIP'].replace('.', ':')
         dstIP = flow['dstIP'].replace('.', ':')
         srcPort = flow['srcPort'].replace('.', ':')
         dstPort = flow['dstPort'].replace('.', ':')
         flowsample = srcIP + ':' + dstIP + ':' + srcPort + ':' + dstPort
+        return flowsample
+
+    def gflowestm_update(self, flow):
+        # do this whenever a flow finishes routing and the flow info. is collected.
+        flowsample = self.flowSampleMaker(flow)
+        # update flow with flow's fct
         fs_update = datetime.datetime.now() - flow['stime']
         fs_update = fs_update.total_seconds()
         self.model.update_online(flowsample, fs_update)
