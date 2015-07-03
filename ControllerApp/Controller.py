@@ -1,9 +1,9 @@
 __author__ = 'li'
 
-import FlowDB
-import Allocator
-import CoflowID
-import SizeEstimator
+from ControllerApp.FlowDB import FlowDB
+from ControllerApp.Allocator import Allocator
+from ControllerApp.CoflowID import CoflowID
+from ControllerApp.SizeEstimator import SizeEstimator
 
 class Controller(object):
     # ryu handler interacts with different components directly
