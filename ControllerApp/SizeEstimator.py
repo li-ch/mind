@@ -9,7 +9,7 @@ class PredictionModels:
 class SizeEstimator(object):
     def __init__(self):
         self.model = GPRFlowEstimator.GPRModel()
-        self.model.load('GPR_model.txt')
+        self.model.load('Models/GPR_model.txt')
 
     def estimate(self, flowdb):
         for f in flowdb:
@@ -23,7 +23,7 @@ class SizeEstimator(object):
         # interface with size estimation
         return size
 
-    def train(self, model=PredictionModels.GPR, trainingset='univ_1_1.csv', modelpath='model.txt'):
+    def train(self, model=PredictionModels.GPR, trainingset='Inputs/univ_1_1.csv', modelpath='Models/model.txt'):
         if model == PredictionModels.GPR:
             m = self.gflowestm_train(self, trainingset=trainingset, modelpath=modelpath)
         elif model == PredictionModels.NW:
@@ -34,7 +34,7 @@ class SizeEstimator(object):
             print 'Unknown model {}, cannot train'.format(model)
         return m
 
-    def gflowestm_train(self, trainingset='univ_1_1.csv', modelpath='model.txt'):
+    def gflowestm_train(self, trainingset='Inputs/univ_1_1.csv', modelpath='Models/model.txt'):
         samples = trainingset  # input sample file
         target_name = 'Payload_Bytes'
         feature_name = 'Server_IP_1:Server_IP_2:Server_IP_3:Server_IP_4:' +\
