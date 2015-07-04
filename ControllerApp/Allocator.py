@@ -38,7 +38,7 @@ class Allocator(object):
     def genCandidatePaths(self, paths, flowdb):
         # use reinforcement learning to generate candidate paths
         # interface with RL module
-        # TODO: add RL support
+        # TODO: add RL support. NOTE: there is also a pathing function in Controller.py
         return paths
 
 
