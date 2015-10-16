@@ -7,7 +7,7 @@ from ControllerApp.SizeEstimator import SizeEstimator
 
 # Spine leaf testbed topology constants
 NUMCORE = 2
-NUMRACK = 8
+NUMRACK = 4
 NUMSERVERPRACK = 4
 NUMSERVER = NUMCORE * NUMRACK * NUMSERVERPRACK
 
@@ -77,6 +77,3 @@ class Controller(object):
         # srcRack = self.getRackNum(srcServer)
         # dstRack = self.getRackNum(dstServer)
         return self.cores
-
-    # TODO: Integrate with Ryu
-    # TODO: testcases for controller components

@@ -3,8 +3,13 @@ __author__ = 'li'
 from flowsizepred import GPRFlowEstimator
 import datetime
 
+
 class PredictionModels:
+    def __init__(self):
+        pass
+
     GPR, NW, RL = range(3)
+
 
 class SizeEstimator(object):
     def __init__(self):
@@ -37,7 +42,7 @@ class SizeEstimator(object):
     def gflowestm_train(self, trainingset='Inputs/univ_1_1.csv', modelpath='Models/model.txt'):
         samples = trainingset  # input sample file
         target_name = 'Payload_Bytes'
-        feature_name = 'Server_IP_1:Server_IP_2:Server_IP_3:Server_IP_4:' +\
+        feature_name = 'Server_IP_1:Server_IP_2:Server_IP_3:Server_IP_4:' + \
                        'Client_IP_1:Client_IP_2:Client_IP_3:Client_IP_4:Server_Port:Client_Port'
         # Server_IP_1 ~ Server_IP_4 are the four bytes from an IP address
         feature_type = 'IP:IP:IP:IP:IP:IP:IP:IP:Port:Port'
@@ -92,8 +97,6 @@ class SizeEstimator(object):
         fs_update = datetime.datetime.now() - flow['stime']
         fs_update = fs_update.total_seconds()
         self.model.update_online(flowsample, fs_update)
-
-    # TODO: Add nwflowestimator
 
 
 def main():

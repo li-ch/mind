@@ -11,7 +11,7 @@ from ryu.lib import hub
 from ControllerApp import Controller
 from ControllerApp.FlowDB import Flow
 
-LOG = logging.getLogger('SimpleMonitor')
+LOG = logging.getLogger("TrafficMonitor")
 LOG.setLevel(logging.INFO)
 logging.basicConfig()
 
@@ -82,7 +82,7 @@ class TrafficMonitor(app_manager.RyuApp):
                 stat.match["ipv4_dst"],
                 stat.packet_count,
                 stat.byte_count)
-            # Controller functions
+            # MINDCTRL functions
             f = Flow(fid=self.flowCounter, srcIP=stat.match["ipv4_src"], dstIP=stat.match["ipv4_dst"],
                      srcPort=stat.match["tcp_src"], dstPort=["tcp_dst"])
             f['size'] = self.controller.flowSizeEstm.predict(f)
