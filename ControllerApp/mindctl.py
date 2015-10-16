@@ -5,6 +5,13 @@ from ryu.controller.handler import MAIN_DISPATCHER, DEAD_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.lib import hub
 import os
+import logging
+from ControllerApp import Controller
+from ControllerApp.FlowDB import Flow
+
+LOG = logging.getLogger("Mind Controller")
+LOG.setLevel(logging.INFO)
+logging.basicConfig()
 
 
 class SimpleMonitor(simple_switch_13.SimpleSwitch13):
@@ -12,6 +19,10 @@ class SimpleMonitor(simple_switch_13.SimpleSwitch13):
         super(SimpleMonitor, self).__init__(*args, **kwargs)
         self.datapaths = {}
         self.monitor_thread = hub.spawn(self._monitor)
+        self.portStats = {}
+        self.flowStats = {}
+        self.controller = Controller.Controller()
+        self.flowCounter = 0
 
     @set_ev_cls(ofp_event.EventOFPStateChange,
                 [MAIN_DISPATCHER, DEAD_DISPATCHER])
@@ -32,7 +43,6 @@ class SimpleMonitor(simple_switch_13.SimpleSwitch13):
                 self._request_stats(dp)
             hub.sleep(5)
 
-
     def _request_stats(self, datapath):
         self.logger.debug('send stats request: %016x', datapath.id)
         ofproto = datapath.ofproto
@@ -49,8 +59,8 @@ class SimpleMonitor(simple_switch_13.SimpleSwitch13):
         body = ev.msg.body
         self.logger.info('start')
         self.logger.info('datapath,         port,    '
-                     'rx_pkts,  rx_bytes, rx_error,'
-                     'tx_pkts,  tx_bytes, tx_error,')
+                         'rx_pkts,  rx_bytes, rx_error,'
+                         'tx_pkts,  tx_bytes, tx_error,')
         for stat in sorted(body, key=attrgetter('port_no')):
             self.logger.info('%016x, %8x, %8d, %8d, %8d, %8d, %8d, %8d,',
                              ev.msg.datapath.id, stat.port_no,
@@ -61,6 +71,32 @@ class SimpleMonitor(simple_switch_13.SimpleSwitch13):
     @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
     def _flow_stats_reply_handler(self, ev):
         body = ev.msg.body
-        os.system('sudo rm /ss.log') 
-        self.logger.info('start') 
         self.logger.info('start')
+        for stat in [flow for flow in body if flow.priority == 255]:
+                    self.flowStats[stat.match["in_port"]] = FlowStats(
+                        stat.match["in_port"],
+                        stat.match["eth_src"],
+                        stat.match["eth_dst"],
+                        stat.match["ipv4_dst"],
+                        stat.packet_count,
+                        stat.byte_count)
+                    # MINDCTRL functions
+                    f = Flow(fid=self.flowCounter, srcIP=stat.match["ipv4_src"], dstIP=stat.match["ipv4_dst"],
+                             srcPort=stat.match["tcp_src"], dstPort=["tcp_dst"])
+                    f['size'] = self.controller.flowSizeEstm.predict(f)
+                    self.controller.flowDB.reg(self.flowCounter, f)
+                    # update coflow id
+                    self.controller.flowDB = self.controller.coflowid(self.controller.getFlows())
+                    # place flow on path
+                    self.controller.flowDB = self.controller.allocator.placeFlow(self.flowCounter,
+                                                                                 self.controller.getPaths(
+                                                                                     self.controller.getServerId(
+                                                                                         stat.match["ipv4_src"]
+                                                                                     ),
+                                                                                     self.controller.getServerId(
+                                                                                         stat.match["ipv4_dst"]
+                                                                                     )
+                                                                                 ),
+                                                                                 self.controller.getFlows())
+                    self.controller.flowDB = self.controller.allocator.placeAllCoflows(self.controller.getCores())
+                    self.flowCounter += 1
